@@ -14,6 +14,14 @@
 # define PUSH_SWAP_H
 
 # include <stdlib.h>
+# include <limits.h>
+
+/* ************************************************************************** */
+/*                                 ERRORS                                     */
+/* ************************************************************************** */
+
+# define OUTSIDE_INT        -1
+# define INVALID_ELEMENT    -2
 
 /* ************************************************************************** */
 /*                              INSTRUCTIONS                                  */
@@ -58,7 +66,7 @@ typedef enum	e_flow
 
 typedef struct		s_node
 {
-    long			value;
+    int 			value;
     int				index;
     struct s_node	*next;
     struct s_node	*prev;
@@ -67,8 +75,7 @@ typedef struct		s_node
 
 typedef struct	s_stack
 {
-	t_node		*head;
-	t_node		*tail;
+	t_node		*top;
 	int			size;
 }				t_stack;
 

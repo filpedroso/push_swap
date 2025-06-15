@@ -161,19 +161,53 @@ void	push_swap(t_stack *stack_a, t_stack *stack_b)
 	i = 0;
 	while (stack_a->size > 3)
 	{
-		plan = get_cheapest_plan(stack_a, stack_b);
+		plan = best_plan_ab(stack_a, stack_b);
 		execute_plan(plan, stack_a, stack_b);
 	}
 	three_elements(stack_a);
 	while (stack_b->size > 0)
 	{
-		plan = get_insert_plan(stack_b, stack_a); // mirror of get_cheapest_plan
-		execute_plan(plan, stack_b, stack_a);
+		plan = best_plan_ba(stack_b, stack_a); // mirror of get_cheapest_plan
+		execute_plan(plan, stack_a, stack_b);
 	}
 	rotate_to_min(stack_a);
 }
 
-t_plan	get_cheapest_plan(t_stack *stack_a, t_stack *stack_b)
+void	execute_plan(t_plan plan, t_stack *stack_a, t_stack *stack_b)
+{
+	if (plan.a_direction == plan.b_direction)
+	{
+		if (plan.a_direction == ROTATE)
+			rr(stack_a, stack_b, plan.a_moves, plan.a_moves);
+		else if (plan.a_direction == REVERSE)
+			rrr(stack_a, stack_b, plan.a_moves, plan.a_moves);
+	}
+	else
+	{
+		if (plan.a_direction == ROTATE)
+			rotate(stack_a, plan.a_moves, "ra");
+		else if (plan.a_direction == REVERSE)
+			reverse(stack_a, plan.a_moves, "rra");
+		if (plan.b_direction == ROTATE)
+			rotate(stack_b, plan.a_moves, "rb");
+		else if (plan.b_direction == REVERSE)
+			reverse(stack_b, plan.a_moves, "rrb");
+	}
+	if (plan.push_flow == A_B)
+		push(stack_a, stack_b, "pb");
+	else if (plan.push_flow == B_A)
+		push(stack_b, stack_a, B_A);
+}
+
+void	rotate_to_min(t_stack *stack)
+{
+	if (stack->top->index == 0 || stack->top->index == -1)
+		return ;
+	stack->top = stack->top->next;
+	rotate_to_min(stack);
+}
+
+t_plan	best_plan_ab(t_stack *stack_a, t_stack *stack_b)
 {
 	t_plan	best;
 	t_plan	plan;

@@ -141,10 +141,8 @@ int	in_bounds(long number)
 
 void	init_stacks(t_stack *stack_a, t_stack *stack_b)
 {
-	stack_a->head = NULL;
-	stack_b->head = NULL;
-	stack_a->tail = NULL;
-	stack_b->tail = NULL;
+	stack_a->top = NULL;
+	stack_b->top = NULL;
 	stack_a->size = 0;
 	stack_b->size = 0;
 }
@@ -154,8 +152,10 @@ void	push_swap(t_stack *stack_a, t_stack *stack_b)
 	int		i;
 	t_plan	plan;
 
+	if (is_sorted(stack_a))
+		return ;
 	if (stack_a->size <= 3)
-		two_or_three(stack_a);
+		return (three_elements(stack_a));
 	push(stack_a, stack_b, "pb");
 	push(stack_a, stack_b, "pb");
 	i = 0;
@@ -164,13 +164,140 @@ void	push_swap(t_stack *stack_a, t_stack *stack_b)
 		plan = get_cheapest_plan(stack_a, stack_b);
 		execute_plan(plan, stack_a, stack_b);
 	}
-	two_or_three(stack_a);
+	three_elements(stack_a);
 	while (stack_b->size > 0)
 	{
 		plan = get_insert_plan(stack_b, stack_a); // mirror of get_cheapest_plan
 		execute_plan(plan, stack_b, stack_a);
 	}
 	rotate_to_min(stack_a);
+}
+
+t_plan	get_cheapest_plan(t_stack *stack_a, t_stack *stack_b)
+{
+	t_plan	best;
+	t_plan	plan;
+    t_node	*current;
+    int		i;
+
+	current = stack_a->top;
+	i = 0;
+	while (i < stack_a->size)
+	{
+		plan.a_index = i;
+		plan.b_index = find_b_insert_pos(stack_b, current->index);
+		calc_moves(&plan, stack_a, stack_b);
+		if (plan.a_direction == plan.b_direction)
+			plan.total_cost = ft_max(plan.a_moves, plan.b_moves);
+		else
+			plan.total_cost = plan.a_moves + plan.b_moves;
+		if (i == 0 || plan.total_cost < best.total_cost)
+        	best = plan;
+		current = current->next;
+		i++;
+	}
+	return (best);
+}
+
+int	ft_max(int a, int b)
+{
+	if (b > a)
+		return (b);
+	return (a);
+}
+
+int find_b_insert_pos(t_stack *stack_b, int sorted_idx)
+{
+	t_node	*current;
+	int		i;
+
+	if (stack_b->size == 0)
+		return (0);
+	if (sorted_idx > stack_b->top->index)
+		return (0);
+	if (sorted_idx < stack_b->top->prev->index)
+		return (stack_b->size);
+	current = stack_b->top;
+	i = 0;
+	while (i < stack_b->size)
+	{
+		if (current->index > sorted_idx && current->next->index < sorted_idx)
+			return (i + 1);
+		current = current->next;
+		i++;
+	}
+	return (0);
+}
+
+void	calc_moves(t_plan *plan, t_stack *stack_a, t_stack *stack_b)
+{
+	calc_single_move(plan->a_index, stack_a->size,
+		&plan->a_moves, &plan->a_direction);
+	calc_single_move(plan->b_index, stack_b->size,
+		&plan->b_moves, &plan->b_direction);
+}
+
+calc_single_moves(int position, int size, int *moves, t_dir *dir)
+{
+    if (position <= size/2)
+    {
+        *moves = position;
+        *dir = ROTATE;
+    }
+    else
+    {
+        *moves = size - position;
+        *dir = REVERSE;
+    }
+}
+
+
+int	is_sorted(t_stack *stack)
+{
+	int		stack_size;
+	t_node	*node;
+	int		i;
+
+	stack_size = stack->size;
+	node = stack->top;
+	i = 0;
+	while (i < stack_size)
+	{
+		if (i != stack)
+			return (0);
+		node = node->next;
+		i++;
+	}
+	return (1);
+}
+
+void	three_elements(t_stack *stack)
+{
+	int	a;
+	int	b;
+	int	c;
+
+	if (is_sorted(stack))
+		return ;
+	a = stack->top->index;
+	b = stack->top->next->index;
+	c = stack->top->next->next->index;
+	if (a < c && c < b)			// 132 | 312 | 123
+	{
+		swap(stack, "sa");
+		ra(stack);
+	}
+	else if (b < a && a < c)	// 213 | 123
+		swap(stack, "sa");
+	else if (b < c && c < a)	// 312 | 123
+		ra(stack);
+	else if (c < a && a < b)	// 231 | 123
+		rra(stack);
+	else if (c < b && b < a)	// 321 | 231 | 123
+	{
+		swap(stack, "sa");
+		rra(stack);
+	}
 }
 
 void	push(t_stack *stack_1, t_stack *stack_2, char *move)

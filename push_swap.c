@@ -51,6 +51,59 @@ void	load_stack(t_stack *stack_a, char *list)
 	put_sorted_indexes(stack_a);
 }
 
+void	free_stack(t_stack *stack)
+{
+	t_node	*temp;
+	int		i;
+
+	i = -1;
+	while (++i < stack->size)
+	{
+		temp = stack->top->next;
+		free(stack->top);
+		stack->top = temp;
+	}
+	stack->top = NULL;
+	stack->size = 0;
+}
+
+void	put_sorted_indexes(t_stack *stack)
+{
+	int		index;
+	int		i;
+	t_node	*node;
+	t_node	*min_node;
+
+	index = -1;
+	while (++index < stack->size)
+	{
+		node = stack->top;
+		min_node = NULL;
+		i = -1;
+		while (++i < stack->size)
+		{
+			if (node->index == -1 && (!min_node || node->value < min_node->value))
+				min_node = node;
+			node = node->next;
+		}
+		min_node->index = index;
+	}
+}
+
+t_node	*new_node(int element)
+{
+	t_node	*node;
+
+	node = (t_node *)malloc(sizeof(t_node));
+	if (!node)
+		return (NULL);
+	node->value = element;
+	node->index = -1;
+	node->next = NULL;
+	node->prev = NULL;
+	return (node);
+}
+
 void	stack_add_bottom(t_stack *stack, t_node *node)
 {
 	if (!stack || !node)
@@ -103,8 +156,8 @@ void	push_swap(t_stack *stack_a, t_stack *stack_b)
 
 	if (stack_a->size <= 3)
 		two_or_three(stack_a);
-	push(stack_a, stack_b);
-	push(stack_a, stack_b);
+	push(stack_a, stack_b, "pb");
+	push(stack_a, stack_b, "pb");
 	i = 0;
 	while (stack_a->size > 3)
 	{
@@ -118,4 +171,51 @@ void	push_swap(t_stack *stack_a, t_stack *stack_b)
 		execute_plan(plan, stack_b, stack_a);
 	}
 	rotate_to_min(stack_a);
+}
+
+void	push(t_stack *stack_1, t_stack *stack_2, char *move)
+{
+	t_node	*node;
+
+	node = pop(stack_1);
+	if (!node)
+		return ;
+	if (stack_2->top == NULL)
+	{
+		node->next = node;
+		node->prev = node;
+		stack_2->top = node;
+	}
+	else
+	{
+		node->next = stack_2->top;
+		node->prev = stack_2->top->prev;
+		stack_2->top->prev->next = node;
+		stack_2->top->prev = node;
+		stack_2->top = node;
+	}
+	stack_2->size++;
+	write(1, move, 2);
+	write(1, "\n", 1);
+}
+
+t_node	*pop(t_stack *stack)
+{
+	t_node	*node;
+
+	if (!stack || !stack->top)
+		return (NULL);
+	node = stack->top;
+	if (stack->size == 1)
+		stack->top = NULL;
+	else
+	{
+		node->prev->next = node->next;
+		node->next->prev = node->prev;
+		stack->top = node->next;
+	}
+	stack->size--;
+	node->next = NULL;
+	node->prev = NULL;
+	return (node);
 }

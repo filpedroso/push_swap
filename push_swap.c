@@ -10,6 +10,12 @@
 /*                                                                            */
 /* ************************************************************************** */
 
+//	TODO:
+//	check_args()
+//	swap()
+//	ft_error()
+//	rr and rrr args
+
 #include "push_swap.h"
 
 int	main(int argc, char **argv)
@@ -21,7 +27,8 @@ int	main(int argc, char **argv)
 		return(1);
 	// checks for invalid chars and out of bounds numbers
 	// throws ft_error before any allocation
-	check_args(argv[1]);
+	if (!check_args(argv[1]))
+		return (0);
 	init_stacks(&stack_a, &stack_b);
 	load_stack(&stack_a, argv[1]);
 	if (stack_a.size < 2)
@@ -45,7 +52,7 @@ void	load_stack(t_stack *stack_a, char *list)
 		element = get_next_element(&list); // this also increments list
 		node = new_node(element);
 		if (!node)
-			return (free_stack(stack_a), NULL);
+			return (free_stack(stack_a));
 		stack_add_bottom(stack_a, node);
 	}
 	put_sorted_indexes(stack_a);
@@ -178,9 +185,9 @@ void	execute_plan(t_plan plan, t_stack *stack_a, t_stack *stack_b)
 	if (plan.a_direction == plan.b_direction)
 	{
 		if (plan.a_direction == ROTATE)
-			rr(stack_a, stack_b, plan.a_moves, plan.a_moves);
+			rr(stack_a, stack_b, plan.a_moves, plan.b_moves);
 		else if (plan.a_direction == REVERSE)
-			rrr(stack_a, stack_b, plan.a_moves, plan.a_moves);
+			rrr(stack_a, stack_b, plan.a_moves, plan.b_moves);
 	}
 	else
 	{
@@ -196,7 +203,49 @@ void	execute_plan(t_plan plan, t_stack *stack_a, t_stack *stack_b)
 	if (plan.push_flow == A_B)
 		push(stack_a, stack_b, "pb");
 	else if (plan.push_flow == B_A)
-		push(stack_b, stack_a, B_A);
+		push(stack_b, stack_a, "pa");
+}
+
+void	rr(t_stack *stack_a, t_stack *stack_b, int times, char *move)
+{
+	while (times--)
+	{
+		stack_a->top = stack_a->top->next;
+		stack_b->top = stack_b->top->next;
+		write (1, move, 2);
+		write (1, "\n", 1);
+	}
+}
+
+void	rrr(t_stack *stack_a, t_stack *stack_b, int times, char *move)
+{
+	while (times--)
+	{
+		stack_a->top = stack_a->top->prev;
+		stack_b->top = stack_b->top->prev;
+		write (1, move, 3);
+		write (1, "\n", 1);
+	}
+}
+
+void	rotate(t_stack *stack, int times, char *move)
+{
+	while (times--)
+	{
+		stack->top = stack->top->next;
+		write (1, move, 2);
+		write (1, "\n", 1);
+	}
+}
+
+void	reverse(t_stack *stack, int times, char *move)
+{
+	while (times--)
+	{
+		stack->top = stack->top->prev;
+		write (1, move, 2);
+		write (1, "\n", 1);
+	}
 }
 
 void	rotate_to_min(t_stack *stack)
@@ -233,6 +282,33 @@ t_plan	best_plan_ab(t_stack *stack_a, t_stack *stack_b)
 	return (best);
 }
 
+t_plan	best_plan_ba(t_stack *stack_b, t_stack *stack_a)
+{
+	t_plan	best;
+	t_plan	plan;
+    t_node	*current;
+    int		i;
+
+	current = stack_b->top;
+	i = 0;
+	while (i < stack_b->size)
+	{
+		plan.b_index = i;
+		plan.a_index = find_a_insert_pos(stack_a, current->index);
+		calc_moves(&plan, stack_b, stack_a);
+		if (plan.b_direction == plan.a_direction)
+			plan.total_cost = ft_max(plan.b_moves, plan.a_moves);
+		else
+			plan.total_cost = plan.b_moves + plan.a_moves;
+		if (i == 0 || plan.total_cost < best.total_cost)
+        	best = plan;
+		current = current->next;
+		i++;
+	}
+	return (best);
+}
+
+
 int	ft_max(int a, int b)
 {
 	if (b > a)
@@ -263,15 +339,38 @@ int find_b_insert_pos(t_stack *stack_b, int sorted_idx)
 	return (0);
 }
 
-void	calc_moves(t_plan *plan, t_stack *stack_a, t_stack *stack_b)
+int find_a_insert_pos(t_stack *stack_a, int sorted_idx)
 {
-	calc_single_move(plan->a_index, stack_a->size,
+	t_node	*current;
+	int		i;
+
+	if (stack_a->size == 0)
+		return (0);
+	if (sorted_idx < stack_a->top->index)
+		return (0);
+	if (sorted_idx > stack_a->top->prev->index)
+		return (stack_a->size);
+	current = stack_a->top;
+	i = 0;
+	while (i < stack_a->size)
+	{
+		if (current->index < sorted_idx && current->next->index > sorted_idx)
+			return (i + 1);
+		current = current->next;
+		i++;
+	}
+	return (0);
+}
+
+void	calc_moves(t_plan *plan, t_stack *stack_1, t_stack *stack_2)
+{
+	calc_single_move(plan->a_index, stack_1->size,
 		&plan->a_moves, &plan->a_direction);
-	calc_single_move(plan->b_index, stack_b->size,
+	calc_single_move(plan->b_index, stack_2->size,
 		&plan->b_moves, &plan->b_direction);
 }
 
-calc_single_moves(int position, int size, int *moves, t_dir *dir)
+void	calc_single_move(int position, int size, int *moves, t_dir *dir)
 {
     if (position <= size/2)
     {
@@ -297,7 +396,7 @@ int	is_sorted(t_stack *stack)
 	i = 0;
 	while (i < stack_size)
 	{
-		if (i != stack)
+		if (i != node->index)
 			return (0);
 		node = node->next;
 		i++;
@@ -319,18 +418,18 @@ void	three_elements(t_stack *stack)
 	if (a < c && c < b)			// 132 | 312 | 123
 	{
 		swap(stack, "sa");
-		ra(stack);
+		rotate(stack, 1, "ra");
 	}
 	else if (b < a && a < c)	// 213 | 123
 		swap(stack, "sa");
 	else if (b < c && c < a)	// 312 | 123
-		ra(stack);
+		rotate(stack, 1, "ra");
 	else if (c < a && a < b)	// 231 | 123
-		rra(stack);
+		reverse(stack, 1, "rra");
 	else if (c < b && b < a)	// 321 | 231 | 123
 	{
 		swap(stack, "sa");
-		rra(stack);
+		reverse(stack, 1, "rra");
 	}
 }
 
@@ -379,4 +478,40 @@ t_node	*pop(t_stack *stack)
 	node->next = NULL;
 	node->prev = NULL;
 	return (node);
+}
+
+int	ft_numlen(int num)
+{
+	int	len;
+
+	if (num == INT_MIN)
+		return (11);
+	if (num < 0)
+		num = -num;
+	len = 1;
+	while (num >= 10)
+	{
+		num /= 10;
+		len++;
+	}
+	return (len);
+}
+
+int	ft_atoi(const char *str)
+{
+	int	sign;
+	int	result;
+
+	sign = 1;
+	result = 0;
+	while (*str == ' ')
+		str++;
+	if (*str == '-')
+		sign = -sign;
+	while (*str >= '0' && *str <= '9')
+	{
+		result = result * 10 + (*str - 48);
+		str++;
+	}
+	return (result * sign);
 }

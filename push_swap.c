@@ -441,49 +441,63 @@ int	ft_max(int a, int b)
 
 int find_b_insert_pos(t_stack *stack_b, int sorted_idx)
 {
-	t_node	*current;
-	int		i;
+    t_node *current = stack_b->top;
+    int i = 0;
+    int pos = 0;
+    int min_diff = INT_MAX;
+    int min_index = INT_MAX;
+    int min_pos = 0;
 
-	if (stack_b->size == 0)
-		return (0);
-	if (sorted_idx > stack_b->top->index)
-		return (0);
-	if (sorted_idx < stack_b->top->prev->index)
-		return (stack_b->size);
-	current = stack_b->top;
-	i = 0;
-	while (i < stack_b->size)
-	{
-		if (current->index > sorted_idx && current->next->index < sorted_idx)
-			return (i + 1);
-		current = current->next;
-		i++;
-	}
-	return (0);
+    // Find the position before the largest index < sorted_idx
+    while (i < stack_b->size)
+    {
+        if (current->index < sorted_idx && sorted_idx - current->index < min_diff)
+        {
+            min_diff = sorted_idx - current->index;
+            pos = i;
+        }
+        if (current->index < min_index)
+        {
+            min_index = current->index;
+            min_pos = i;
+        }
+        current = current->next;
+        i++;
+    }
+    // If no index < sorted_idx, insert after the min (i.e., at the bottom)
+    return (min_diff == INT_MAX) ? (min_pos + 1) % stack_b->size : pos;
 }
+
 
 int find_a_insert_pos(t_stack *stack_a, int sorted_idx)
 {
-	t_node	*current;
-	int		i;
+    t_node *current = stack_a->top;
+    int i = 0;
+    int pos = 0;
+    int min_diff = INT_MAX;
+    int max_index = INT_MIN;
+    int max_pos = 0;
 
-	if (stack_a->size == 0)
-		return (0);
-	if (sorted_idx < stack_a->top->index)
-		return (0);
-	if (sorted_idx > stack_a->top->prev->index)
-		return (stack_a->size);
-	current = stack_a->top;
-	i = 0;
-	while (i < stack_a->size)
-	{
-		if (current->index < sorted_idx && current->next->index > sorted_idx)
-			return (i + 1);
-		current = current->next;
-		i++;
-	}
-	return (0);
+    // Find the position before the smallest index > sorted_idx
+    while (i < stack_a->size)
+    {
+        if (current->index > sorted_idx && current->index - sorted_idx < min_diff)
+        {
+            min_diff = current->index - sorted_idx;
+            pos = i;
+        }
+        if (current->index > max_index)
+        {
+            max_index = current->index;
+            max_pos = i;
+        }
+        current = current->next;
+        i++;
+    }
+    // If no index > sorted_idx, insert after the max (i.e., at the bottom)
+    return (min_diff == INT_MAX) ? (max_pos + 1) % stack_a->size : pos;
 }
+
 
 void	calc_moves(t_plan *plan, t_stack *stack_1, t_stack *stack_2)
 {

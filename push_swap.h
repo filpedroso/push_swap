@@ -13,6 +13,7 @@
 #ifndef PUSH_SWAP_H
 # define PUSH_SWAP_H
 
+# include <stdio.h>
 # include <limits.h>
 # include <stdbool.h>
 # include <stdlib.h>
@@ -51,11 +52,11 @@ typedef enum e_dir
 	REVERSE
 }					t_dir;
 
-typedef enum e_flow
+typedef enum	e_flow
 {
 	A_B,
 	B_A
-}					t_flow;
+}				t_flow;
 
 /* ************************************************************************** */
 /*                                 STRUCTS                                    */
@@ -75,7 +76,7 @@ typedef struct s_stack
 	int				size;
 }					t_stack;
 
-typedef struct s_plan
+typedef struct 		s_plan
 {
 	int				a_index;
 	int				b_index;
@@ -102,12 +103,10 @@ void				init_stacks(t_stack *stack_a, t_stack *stack_b);
 void				push_swap(t_stack *stack_a, t_stack *stack_b);
 void				execute_plan(t_plan plan, t_stack *stack_a,
 						t_stack *stack_b);
-void				rr(t_stack *stack_a, t_stack *stack_b, int times,
-						char *move);
-void				rrr(t_stack *stack_a, t_stack *stack_b, int times,
-						char *move);
-void				rotate(t_stack *stack, int times, char *move);
-void				reverse(t_stack *stack, int times, char *move);
+void				rr(t_stack *stack_a, t_stack *stack_b);
+void				rrr(t_stack *stack_a, t_stack *stack_b);
+int					rotate(t_stack *stack, int times, char *move);
+int					reverse(t_stack *stack, int times, char *move);
 void				rotate_to_min(t_stack *stack);
 t_plan				best_plan_ab(t_stack *stack_a, t_stack *stack_b);
 t_plan				best_plan_ba(t_stack *stack_b, t_stack *stack_a);
@@ -117,12 +116,20 @@ int					find_a_insert_pos(t_stack *stack_a, int sorted_idx);
 void				calc_moves(t_plan *plan, t_stack *stack_1,
 						t_stack *stack_2);
 int					is_sorted(t_stack *stack);
-void				three_elements(t_stack *stack);
+void				sort_three(t_stack *stack);
 void				push(t_stack *stack_1, t_stack *stack_2, char *move);
 void				calc_single_move(int position, int size, int *moves,
 						t_dir *dir);
 t_node				*pop(t_stack *stack);
 int					ft_numlen(int num);
-int					ft_atoi(const char *str);
+long				ft_atoi(const char *str);
+void				reinsert_after(t_node *position, t_node *node);
+void				swap(t_stack *stack, char *move);
+int					has_duplicate(t_stack *stack);
+int					check_args(char *input);
+void				rotate_same_dir(t_plan *plan, t_stack *stack_a, t_stack *stack_b);
+void				ft_putstr_fd(const char *str, int fd);
+void				print_stack_dbg(t_stack *stack_a);
+void				dbg_print_indexes(t_stack *stack);
 
 #endif

@@ -445,7 +445,7 @@ void	calc_b_moves(t_plan *plan, t_stack *stack_b, int idx)
 	}
 }
 
-int	find_mid_idx(t_stack *stack_b, int new_idx, t_dir *dir)
+int	find_mid_idx(t_stack *stack_b, int new_idx)
 {
 	t_node	*current;
 	int 	i;
@@ -472,8 +472,8 @@ int	min_rotations_to(t_stack *stack, int idx, t_dir *dir)
 	int	rot_direct;
 	int	rot_reverse;
 
-	rot_direct = min_rot_direct(stack, idx, dir);
-	rot_reverse = min_rot_reverse(stack, idx, dir);
+	rot_direct = min_rot_direct(stack, idx);
+	rot_reverse = min_rot_reverse(stack, idx);
 	if (rot_direct < rot_reverse)
 	{
 		*dir = DIRECT;
@@ -483,7 +483,7 @@ int	min_rotations_to(t_stack *stack, int idx, t_dir *dir)
 	return (rot_reverse);
 }
 
-int	min_rot_direct(t_stack *stack, int idx, t_dir *dir)
+int	min_rot_direct(t_stack *stack, int idx)
 {
 	int		rot_direct;
 	t_node	*node;
@@ -500,7 +500,7 @@ int	min_rot_direct(t_stack *stack, int idx, t_dir *dir)
 	return (rot_direct);
 }
 
-int	min_rot_reverse(t_stack *stack, int idx, t_dir *dir)
+int	min_rot_reverse(t_stack *stack, int idx)
 {
 	int		rot_reverse;
 	t_node	*node;

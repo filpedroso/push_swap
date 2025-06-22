@@ -128,5 +128,12 @@ void				calc_mid_position(t_plan *plan, t_stack *stack_b, int idx);
 void				wrap_plan(t_plan *plan);
 int					smallest_idx(t_stack *stack);
 int					biggest_idx(t_stack *stack);
+void	push_back(t_stack *stack_a, t_stack *stack_b);
+void	rotate_a_to_position(t_stack *stack_a, int idx);
+int	min_rotations_to(t_stack *stack, int idx, t_dir *dir);
+int	find_mid_idx(t_stack *stack_b, int new_idx);
+int	min_rot_direct(t_stack *stack, int idx);
+int	min_rot_reverse(t_stack *stack, int idx);
+
 
 #endif

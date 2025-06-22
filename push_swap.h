@@ -121,7 +121,7 @@ int					check_args(char *input);
 void				rotate_same_dir(t_plan *plan, t_stack *stack_a,
 						t_stack *stack_b);
 void				ft_putstr_fd(const char *str, int fd);
-void				print_stack_dbg(t_stack *stack_a);
+void				print_stack_dbg(t_stack *stack_a, char *text);
 void				dbg_print_indexes(t_stack *stack);
 void				calc_b_moves(t_plan *plan, t_stack *stack_b, int idx);
 void				calc_mid_position(t_plan *plan, t_stack *stack_b, int idx);
@@ -134,6 +134,9 @@ int	min_rotations_to(t_stack *stack, int idx, t_dir *dir);
 int	find_mid_idx(t_stack *stack_b, int new_idx);
 int	min_rot_direct(t_stack *stack, int idx);
 int	min_rot_reverse(t_stack *stack, int idx);
+int	find_mid_idx_a(t_stack *stack_a, int idx_from_b);
+int	find_idx_in_a(t_stack *stack_a, int idx_from_b);
+
 
 
 #endif

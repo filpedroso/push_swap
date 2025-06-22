@@ -33,15 +33,12 @@ int	main(int argc, char **argv)
 	init_stacks(&stack_a, &stack_b);
 	load_stack(&stack_a, argv[1]);
 
-	printf("UNSORTED STACK A:\n");
-	dbg_print_indexes(&stack_a);
-	printf("-----MOVES-----\n");
+	print_stack_dbg(&stack_a, "UNSORTED STACK A:");
+	printf("MOVES:\n");
 
 	push_swap(&stack_a, &stack_b);
 
-	printf("---------------\n");
-	printf("SORTED STACK A:\n");
-	dbg_print_indexes(&stack_a);
+	print_stack_dbg(&stack_a, "SORTED STACK A:");
 
 	free_stack(&stack_a);
 	free_stack(&stack_b);
@@ -69,19 +66,22 @@ int	check_args(char *input)
 	return (1);
 }
 
-void	print_stack_dbg(t_stack *stack_a)
+void	print_stack_dbg(t_stack *stack_a, char *text)
 {
 	t_node	*head;
 
 	head = stack_a->top;
 	int	i = 0;
+	printf("--------------\n");
+	printf("%s\n", text);
 	printf("Stack size: %i\n", stack_a->size);
 	while (i < stack_a->size)
 	{
-		printf("%i\n", head->value);
+		printf("%i	idx -> %i\n", head->value, head->index);
 		head = head->next;
 		i++;
 	}
+	printf("--------------\n");
 }
 
 void	load_stack(t_stack *stack_a, char *list)
@@ -262,20 +262,61 @@ void	push_swap(t_stack *stack_a, t_stack *stack_b)
 		execute_plan(plan, stack_a, stack_b);
 	}
 	sort_three(stack_a);
+	print_stack_dbg(stack_a, "SORTED A THREE:");
+	print_stack_dbg(stack_b, "SORTED STACK B:");
 	push_back(stack_a, stack_b);
+	print_stack_dbg(stack_a, "SORTED A BEFORE FINAL ROT:");
 	rotate_a_to_top(stack_a);
 }
 
 void	push_back(t_stack *stack_a, t_stack *stack_b)
 {
-	t_node	*node;
+	int		idx_in_a;
 
-	node = stack_b->top;
+	print_stack_dbg(stack_b, "STACK B BEFORE PUSH_BACK");
 	while (stack_b->size)
 	{
-		rotate_a_to_position(stack_a, node->index);
+		printf("idx b: %i idx a: %i\n", stack_b->top->index, idx_in_a);
+		idx_in_a = find_idx_in_a(stack_a, stack_b->top->index);
+		rotate_a_to_position(stack_a, idx_in_a);
 		push(stack_b, stack_a, "pa\n");
 	}
+}
+
+int	find_idx_in_a(t_stack *stack_a, int idx_from_b)
+{
+	int	big;
+	int	small;
+
+	big = biggest_idx(stack_a);
+	small = smallest_idx(stack_a);
+	if (idx_from_b > big)
+		return (big);
+	if (idx_from_b < small)
+		return (small);
+	return (find_mid_idx_a(stack_a, idx_from_b));
+}
+
+int	find_mid_idx_a(t_stack *stack_a, int idx_from_b)
+{
+	t_node	*current;
+	int 	i;
+	int		mid_idx;
+
+	current = stack_a->top;
+	i = 0;
+	while (i < stack_a->size)
+	{
+		mid_idx = current->next->index;
+		if (current->index < current->next->index)
+		{
+			if (current->index < idx_from_b && idx_from_b < current->next->index)
+				break ;
+		}
+		current = current->next;
+		i++;
+	}
+	return (mid_idx);
 }
 
 void	rotate_a_to_position(t_stack *stack_a, int idx)
@@ -283,8 +324,6 @@ void	rotate_a_to_position(t_stack *stack_a, int idx)
 	t_dir	dir;
 	int		n_rot;
 
-	if (idx < stack_a->top->index)
-		return ;
 	n_rot = min_rotations_to(stack_a, idx, &dir);
 	if (dir == DIRECT)
 		rotate(stack_a, n_rot, "ra\n");
@@ -296,13 +335,10 @@ void	execute_plan(t_plan plan, t_stack *stack_a, t_stack *stack_b)
 {
 	if (plan.dir_origin == plan.dir_dest)
 		rotate_same_dir(&plan, stack_a, stack_b);
-	if (plan.moves_origin)
-	{
-		if (plan.dir_origin == DIRECT)
-			plan.moves_origin -= rotate(stack_a, plan.moves_origin, "ra\n");
-		else
-			plan.moves_origin -= reverse(stack_a, plan.moves_origin, "rra1\n");
-	}
+	if (plan.moves_origin && plan.dir_origin == DIRECT)
+		plan.moves_origin -= rotate(stack_a, plan.moves_origin, "ra\n");
+	else if (plan.moves_origin && plan.dir_origin == REVERSE)
+		plan.moves_origin -= reverse(stack_a, plan.moves_origin, "rra1\n");
 	if (plan.moves_dest)
 	{
 		if (plan.moves_dest == DIRECT)
@@ -310,10 +346,7 @@ void	execute_plan(t_plan plan, t_stack *stack_a, t_stack *stack_b)
 		else
 			plan.moves_dest -= reverse(stack_b, plan.moves_dest, "rrb\n");
 	}
-	if (plan.push_flow == A_B)
-		push(stack_a, stack_b, "pb\n");
-	else if (plan.push_flow == B_A)
-		push(stack_b, stack_a, "pa\n");
+	push(stack_a, stack_b, "pb\n");
 }
 
 void	rotate_same_dir(t_plan *plan, t_stack *stack_a, t_stack *stack_b)
@@ -412,7 +445,7 @@ t_plan	best_plan_ab(t_stack *stack_a, t_stack *stack_b)
 		plan.moves_origin = i;
 		if (i > stack_a->size / 2)
 		{
-			plan.moves_origin = (stack_a->size / 2) - (i % (stack_a->size / 2) + 1);
+			plan.moves_origin = stack_a->size - i;
 			plan.dir_origin = REVERSE;
 		}
 		calc_b_moves(&plan, stack_b, current->index);
@@ -421,7 +454,6 @@ t_plan	best_plan_ab(t_stack *stack_a, t_stack *stack_b)
         	best = plan;
 		current = current->next;
 	}
-	best.push_flow = A_B;
 	return (best);
 }
 

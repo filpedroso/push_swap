@@ -33,12 +33,12 @@ int	main(int argc, char **argv)
 	init_stacks(&stack_a, &stack_b);
 	load_stack(&stack_a, argv[1]);
 
-	print_stack_dbg(&stack_a, "UNSORTED STACK A:");
-	printf("MOVES:\n");
+	// print_stack_dbg(&stack_a, "UNSORTED STACK A:");
+	// printf("MOVES:\n");
 
 	push_swap(&stack_a, &stack_b);
 
-	print_stack_dbg(&stack_a, "SORTED STACK A:");
+	// print_stack_dbg(&stack_a, "SORTED STACK A:");
 
 	free_stack(&stack_a);
 	free_stack(&stack_b);
@@ -229,19 +229,6 @@ void	init_stacks(t_stack *stack_a, t_stack *stack_b)
 	stack_b->size = 0;
 }
 
-void	dbg_print_indexes(t_stack *stack)
-{
-	t_node	*head;
-
-	head = stack->top;
-	int	i = 0;
-	while (i < stack->size)
-	{
-		printf("%i	idx-> %i\n", head->value, head->index);
-		head = head->next;
-		i++;
-	}
-}
 
 void	push_swap(t_stack *stack_a, t_stack *stack_b)
 {
@@ -261,11 +248,11 @@ void	push_swap(t_stack *stack_a, t_stack *stack_b)
 		plan = best_plan_ab(stack_a, stack_b);
 		execute_plan(plan, stack_a, stack_b);
 	}
+	// print_stack_dbg(stack_a, "A UNSORTED 3:");
 	sort_three(stack_a);
-	print_stack_dbg(stack_a, "SORTED A THREE:");
-	print_stack_dbg(stack_b, "SORTED STACK B:");
+	// print_stack_dbg(stack_a, "A SORTED 3:");
+	// print_stack_dbg(stack_b, "SORTED B:");
 	push_back(stack_a, stack_b);
-	print_stack_dbg(stack_a, "SORTED A BEFORE FINAL ROT:");
 	rotate_a_to_top(stack_a);
 }
 
@@ -273,10 +260,8 @@ void	push_back(t_stack *stack_a, t_stack *stack_b)
 {
 	int		idx_in_a;
 
-	print_stack_dbg(stack_b, "STACK B BEFORE PUSH_BACK");
 	while (stack_b->size)
 	{
-		printf("idx b: %i idx a: %i\n", stack_b->top->index, idx_in_a);
 		idx_in_a = find_idx_in_a(stack_a, stack_b->top->index);
 		rotate_a_to_position(stack_a, idx_in_a);
 		push(stack_b, stack_a, "pa\n");
@@ -290,9 +275,7 @@ int	find_idx_in_a(t_stack *stack_a, int idx_from_b)
 
 	big = biggest_idx(stack_a);
 	small = smallest_idx(stack_a);
-	if (idx_from_b > big)
-		return (big);
-	if (idx_from_b < small)
+	if (idx_from_b > big || idx_from_b < small)
 		return (small);
 	return (find_mid_idx_a(stack_a, idx_from_b));
 }
@@ -335,17 +318,23 @@ void	execute_plan(t_plan plan, t_stack *stack_a, t_stack *stack_b)
 {
 	if (plan.dir_origin == plan.dir_dest)
 		rotate_same_dir(&plan, stack_a, stack_b);
-	if (plan.moves_origin && plan.dir_origin == DIRECT)
-		plan.moves_origin -= rotate(stack_a, plan.moves_origin, "ra\n");
-	else if (plan.moves_origin && plan.dir_origin == REVERSE)
-		plan.moves_origin -= reverse(stack_a, plan.moves_origin, "rra1\n");
+	if (plan.moves_origin)
+	{
+		if (plan.dir_origin == DIRECT)
+			rotate(stack_a, plan.moves_origin, "ra\n");
+		else
+			reverse(stack_a, plan.moves_origin, "rra\n");
+	}
+	plan.moves_origin = 0;
 	if (plan.moves_dest)
 	{
-		if (plan.moves_dest == DIRECT)
-			plan.moves_dest -= rotate(stack_b, plan.moves_dest, "rb\n");
+		if (plan.dir_dest == DIRECT)
+			rotate(stack_b, plan.moves_dest, "rb\n");
 		else
-			plan.moves_dest -= reverse(stack_b, plan.moves_dest, "rrb\n");
+			reverse(stack_b, plan.moves_dest, "rrb\n");
 	}
+	plan.moves_dest = 0;
+	// print_stack_dbg(stack_b, "B BEFORE PUSH");
 	push(stack_a, stack_b, "pb\n");
 }
 
@@ -381,12 +370,11 @@ int	rotate(t_stack *stack, int times, char *move)
 	int	times_rotated;
 
 	times_rotated = 0;
-	while (times > 0)
+	while (times--)
 	{
 		stack->top = stack->top->next;
 		ft_putstr_fd(move, 1);
 		times_rotated++;
-		times--;
 	}
 	return (times_rotated);
 }
@@ -396,12 +384,11 @@ int	reverse(t_stack *stack, int times, char *move)
 	int	times_rotated;
 
 	times_rotated = 0;
-	while (times > 0)
+	while (times--)
 	{
 		stack->top = stack->top->prev;
 		ft_putstr_fd(move, 1);
 		times_rotated++;
-		times--;
 	}
 	return (times_rotated);
 }
@@ -438,11 +425,11 @@ t_plan	best_plan_ab(t_stack *stack_a, t_stack *stack_b)
     int		i;
 
 	current = stack_a->top;
-	plan.dir_origin = DIRECT;
 	i = -1;
 	while (++i < stack_a->size)
 	{
 		plan.moves_origin = i;
+		plan.dir_origin = DIRECT;
 		if (i > stack_a->size / 2)
 		{
 			plan.moves_origin = stack_a->size - i;
@@ -466,10 +453,8 @@ void	calc_b_moves(t_plan *plan, t_stack *stack_b, int idx)
 	big = biggest_idx(stack_b);
 	small = smallest_idx(stack_b);
 	plan->dir_dest = DIRECT;
-	if (idx > big)
+	if (idx > big || idx < small)
 		plan->moves_dest = min_rotations_to(stack_b, big, &plan->dir_dest);
-	else if (idx < small)
-		plan->moves_dest = min_rotations_to(stack_b, small, &plan->dir_dest);
 	else
 	{
 		mid = find_mid_idx(stack_b, idx);
@@ -506,7 +491,7 @@ int	min_rotations_to(t_stack *stack, int idx, t_dir *dir)
 
 	rot_direct = min_rot_direct(stack, idx);
 	rot_reverse = min_rot_reverse(stack, idx);
-	if (rot_direct < rot_reverse)
+	if (rot_direct <= rot_reverse)
 	{
 		*dir = DIRECT;
 		return (rot_direct);

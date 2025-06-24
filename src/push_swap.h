@@ -54,7 +54,6 @@ typedef struct s_plan
 	int		total_cost;
 }			t_plan;
 
-
 void		push_swap(t_stack *stack_a, t_stack *stack_b);
 int			check_args(char *input);
 void		sort_three(t_stack *stack);
@@ -93,6 +92,5 @@ int			reverse(t_stack *stack, int times, char *move);
 
 void		push(t_stack *stack_1, t_stack *stack_2, char *move);
 void		swap(t_stack *stack, char *move);
-
 
 #endif

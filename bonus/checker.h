@@ -15,7 +15,7 @@
 
 # define BUFFER_SIZE 42
 
-#include "../src/push_swap.h"
+# include "../src/push_swap.h"
 
 char	*get_next_line(int fd);
 void	checker(t_stack *stack_a, t_stack *stack_b);

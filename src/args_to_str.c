@@ -18,7 +18,7 @@ static size_t	ft_strlen(const char *s);
 
 char	*args_to_str(int argc, char **argv)
 {
-	int 	i;
+	int		i;
 	char	*result;
 	size_t	total_len;
 
@@ -28,10 +28,11 @@ char	*args_to_str(int argc, char **argv)
 		total_len += ft_strlen(argv[i]) + 1;
 	result = (char *)malloc(total_len);
 	if (!result)
-		return NULL;
+		return (NULL);
 	copy_args(result, argc, argv);
-	return result;
+	return (result);
 }
+
 static void	copy_args(char *result, int argc, char **argv)
 {
 	size_t	len;

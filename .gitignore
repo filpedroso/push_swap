@@ -1,1 +1,4 @@
-inspiration/
+.gitignore
+.vscode
+en.subject.pdf
+tools/

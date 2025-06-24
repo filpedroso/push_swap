@@ -14,6 +14,9 @@
 
 void	free_stack(t_stack *stack)
 {
+	t_node	*temp;
+	int		i;
+
 	i = -1;
 	while (++i < stack->size)
 	{

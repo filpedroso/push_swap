@@ -12,26 +12,6 @@
 
 #include "push_swap.h"
 
-int	main(int argc, char **argv)
-{
-	t_stack	stack_a;
-	t_stack	stack_b;
-
-	if (argc != 2)
-		return (1);
-	if (!check_args(argv[1]))
-	{
-		ft_putstr_fd("Error: check_args returned 0\n", 2);
-		return (1);
-	}
-	init_stacks(&stack_a, &stack_b);
-	load_stack(&stack_a, argv[1]);
-	push_swap(&stack_a, &stack_b);
-	free_stack(&stack_a);
-	free_stack(&stack_b);
-	return (0);
-}
-
 int	check_args(char *input)
 {
 	long	number;

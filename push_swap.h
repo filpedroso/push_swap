@@ -14,33 +14,9 @@
 # define PUSH_SWAP_H
 
 # include <limits.h>
-# include <stdbool.h>
 # include <stdio.h>
 # include <stdlib.h>
 # include <unistd.h>
-
-/* ************************************************************************** */
-/*                                 ERRORS                                     */
-/* ************************************************************************** */
-
-# define OUTSIDE_INT -1
-# define INVALID_ELEMENT -2
-
-/* ************************************************************************** */
-/*                              INSTRUCTIONS                                  */
-/* ************************************************************************** */
-
-# define SA 1
-# define SB 2
-# define SS 3
-# define PA 4
-# define PB 5
-# define RA 6
-# define RB 7
-# define RR 8
-# define RRA 9
-# define RRB 10
-# define RRR 11
 
 /* ************************************************************************** */
 /*                                 ENUMS                                      */
@@ -76,7 +52,7 @@ typedef struct s_stack
 	int				size;
 }					t_stack;
 
-typedef struct	s_plan
+typedef struct s_plan
 {
 	t_flow			push_flow;
 	int				moves_origin;
@@ -87,15 +63,13 @@ typedef struct	s_plan
 }					t_plan;
 
 /* ************************************************************************** */
-/*                                FUNCTIONS                                   */
+/*                               PROTOTYPES                                   */
 /* ************************************************************************** */
 
 void				load_stack(t_stack *stack_a, char *list);
 void				free_stack(t_stack *stack);
-void				put_sorted_indexes(t_stack *stack);
 t_node				*new_node(int element);
 void				stack_add_bottom(t_stack *stack, t_node *node);
-long				get_next_element(char **list);
 int					in_bounds(long number);
 void				init_stacks(t_stack *stack_a, t_stack *stack_b);
 void				push_swap(t_stack *stack_a, t_stack *stack_b);
@@ -111,32 +85,22 @@ int					ft_max(int a, int b);
 int					is_sorted(t_stack *stack);
 void				sort_three(t_stack *stack);
 void				push(t_stack *stack_1, t_stack *stack_2, char *move);
-t_node				*pop(t_stack *stack);
 int					ft_numlen(int num);
 long				ft_atoi(const char *str);
-void				reinsert_after(t_node *position, t_node *node);
 void				swap(t_stack *stack, char *move);
-int					has_duplicate(t_stack *stack);
 int					check_args(char *input);
-void				rotate_same_dir(t_plan *plan, t_stack *stack_a,
-						t_stack *stack_b);
 void				ft_putstr_fd(const char *str, int fd);
 void				print_stack_dbg(t_stack *stack_a, char *text);
 void				dbg_print_indexes(t_stack *stack);
-void				calc_b_moves(t_plan *plan, t_stack *stack_b, int idx);
 void				calc_mid_position(t_plan *plan, t_stack *stack_b, int idx);
-void				wrap_plan(t_plan *plan);
 int					smallest_idx(t_stack *stack);
 int					biggest_idx(t_stack *stack);
-void	push_back(t_stack *stack_a, t_stack *stack_b);
-void	rotate_a_to_position(t_stack *stack_a, int idx);
-int	min_rotations_to(t_stack *stack, int idx, t_dir *dir);
-int	find_mid_idx(t_stack *stack_b, int new_idx);
-int	min_rot_direct(t_stack *stack, int idx);
-int	min_rot_reverse(t_stack *stack, int idx);
-int	find_mid_idx_a(t_stack *stack_a, int idx_from_b);
-int	find_idx_in_a(t_stack *stack_a, int idx_from_b);
-
-
+void				push_back(t_stack *stack_a, t_stack *stack_b);
+void				rotate_a_to_position(t_stack *stack_a, int idx);
+int					min_rotations_to(t_stack *stack, int idx, t_dir *dir);
+int					min_rot_direct(t_stack *stack, int idx);
+int					min_rot_reverse(t_stack *stack, int idx);
+int					find_mid_idx_a(t_stack *stack_a, int idx_from_b);
+int					find_idx_in_a(t_stack *stack_a, int idx_from_b);
 
 #endif

@@ -28,9 +28,9 @@ void	checker(t_stack *stack_a, t_stack *stack_b)
 	}
 	rotate_a_to_top(stack_a);
 	if (is_sorted(stack_a))
-		ft_putstr_fd("OK", 1);
+		ft_putstr_fd("OK\n", 1);
 	else
-		ft_putstr_fd("KO", 1);
+		ft_putstr_fd("KO\n", 1);
 }
 
 static void	exec_instruct(t_stack *stack_a, t_stack *stack_b, char *instr)

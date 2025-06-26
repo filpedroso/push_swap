@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   moves_1.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: filpedroso <filpedroso@student.42.fr>      +#+  +:+       +#+        */
+/*   By: fpedroso <fpedroso@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/24 11:37:43 by filpedroso        #+#    #+#             */
-/*   Updated: 2025/06/24 11:37:43 by filpedroso       ###   ########.fr       */
+/*   Updated: 2025/06/26 12:17:19 by fpedroso         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,6 +31,8 @@ void	push(t_stack *stack_1, t_stack *stack_2, char *move)
 {
 	t_node	*node;
 
+	if (stack_1->size == 0)
+		return;
 	node = pop(stack_1);
 	if (!node)
 		return ;

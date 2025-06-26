@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   push_swap_main.c                                   :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: filpedroso <filpedroso@student.42.fr>      +#+  +:+       +#+        */
+/*   By: fpedroso <fpedroso@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/24 16:04:34 by filpedroso        #+#    #+#             */
-/*   Updated: 2025/06/24 16:04:34 by filpedroso       ###   ########.fr       */
+/*   Updated: 2025/06/26 12:22:57 by fpedroso         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,7 +19,7 @@ int	main(int argc, char **argv)
 	char	*args;
 
 	if (argc == 1)
-		return (1);
+		return (0);
 	args = args_to_str(argc, argv);
 	if (!args)
 		return (1);

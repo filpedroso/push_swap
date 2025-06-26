@@ -3,7 +3,7 @@ import sys
 
 MAX = 2147483647
 MIN = -2147483648
-RAN = 100
+RAN = 500
 
 
 for i in range (RAN):

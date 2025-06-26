@@ -3,10 +3,10 @@
 #                                                         :::      ::::::::    #
 #    Makefile                                           :+:      :+:    :+:    #
 #                                                     +:+ +:+         +:+      #
-#    By: filpedroso <filpedroso@student.42.fr>      +#+  +:+       +#+         #
+#    By: fpedroso <fpedroso@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2025/03/28 18:27:51 by filpedroso        #+#    #+#              #
-#    Updated: 2025/05/28 18:50:12 by filpedroso       ###   ########.fr        #
+#    Updated: 2025/06/26 19:56:09 by fpedroso         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -15,7 +15,7 @@
 NAME = push_swap
 BONUS = checker
 CC = cc
-CFLAGS = -Wextra -Wall -Werror
+CFLAGS = -Wextra -Wall -Werror -g
 
 
 # Source files

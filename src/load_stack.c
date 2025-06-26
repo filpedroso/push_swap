@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   load_stack.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: filpedroso <filpedroso@student.42.fr>      +#+  +:+       +#+        */
+/*   By: fpedroso <fpedroso@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/24 11:26:49 by filpedroso        #+#    #+#             */
-/*   Updated: 2025/06/24 11:26:49 by filpedroso       ###   ########.fr       */
+/*   Updated: 2025/06/26 20:07:39 by fpedroso         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,7 +20,9 @@ void	load_stack(t_stack *stack_a, char *list)
 {
 	int		element;
 	t_node	*node;
+	char	*ptr;
 
+	ptr = list;
 	while (*list)
 	{
 		element = get_next_element(&list);
@@ -31,6 +33,7 @@ void	load_stack(t_stack *stack_a, char *list)
 	}
 	if (has_duplicate(stack_a))
 	{
+		free(ptr);
 		free_stack(stack_a);
 		ft_putstr_fd("Error\n", 2);
 		exit(1);

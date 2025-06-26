@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   push_swap.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: filpedroso <filpedroso@student.42.fr>      +#+  +:+       +#+        */
+/*   By: fpedroso <fpedroso@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/02 00:34:52 by filpedroso        #+#    #+#             */
-/*   Updated: 2025/06/02 00:34:52 by filpedroso       ###   ########.fr       */
+/*   Updated: 2025/06/26 12:22:40 by fpedroso         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,8 +28,6 @@ int	check_args(char *input)
 		input += ft_numlen(number);
 		args_amount++;
 	}
-	if (args_amount < 2)
-		return (0);
 	return (1);
 }
 

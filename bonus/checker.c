@@ -54,7 +54,7 @@ static int	exec_instruct(t_stack *stack_a, t_stack *stack_b, char *instr)
 		rrr(stack_a, stack_b, NO_PRINT);
 	else if (!ft_strncmp(instr, "rr", 2))
 		rr(stack_a, stack_b, NO_PRINT);
-	else
+	else if (!ft_strncmp(instr, "sb", 2) && !ft_strncmp(instr, "ss", 2))
 	{
 		ft_putstr_fd("Error\n", 2);
 		return (-1);

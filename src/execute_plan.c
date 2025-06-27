@@ -42,9 +42,9 @@ static void	rotate_same_dir(t_plan *plan, t_stack *stack_a, t_stack *stack_b)
 	while (plan->moves_origin && plan->moves_dest)
 	{
 		if (plan->dir_origin == DIRECT)
-			rr(stack_a, stack_b);
+			rr(stack_a, stack_b, PRINT);
 		else
-			rrr(stack_a, stack_b);
+			rrr(stack_a, stack_b, PRINT);
 		plan->moves_origin--;
 		plan->moves_dest--;
 	}

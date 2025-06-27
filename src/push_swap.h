@@ -18,6 +18,12 @@
 # include <stdlib.h>
 # include <unistd.h>
 
+typedef enum e_print
+{
+	NO_PRINT,
+	PRINT
+}			t_print;
+
 typedef enum e_dir
 {
 	DIRECT,
@@ -85,8 +91,8 @@ void		stack_add_bottom(t_stack *stack, t_node *node);
 void		rotate_a_to_top(t_stack *stack);
 int			is_sorted(t_stack *stack);
 
-void		rr(t_stack *stack_a, t_stack *stack_b);
-void		rrr(t_stack *stack_a, t_stack *stack_b);
+void		rr(t_stack *stack_a, t_stack *stack_b, t_print print);
+void		rrr(t_stack *stack_a, t_stack *stack_b, t_print print);
 int			rotate(t_stack *stack, int times, char *move);
 int			reverse(t_stack *stack, int times, char *move);
 

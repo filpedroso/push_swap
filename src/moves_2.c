@@ -12,18 +12,20 @@
 
 #include "push_swap.h"
 
-void	rr(t_stack *stack_a, t_stack *stack_b)
+void	rr(t_stack *stack_a, t_stack *stack_b, t_print print)
 {
 	stack_a->top = stack_a->top->next;
 	stack_b->top = stack_b->top->next;
-	ft_putstr_fd("rr\n", 1);
+	if (print)
+		ft_putstr_fd("rr\n", 1);
 }
 
-void	rrr(t_stack *stack_a, t_stack *stack_b)
+void	rrr(t_stack *stack_a, t_stack *stack_b, t_print print)
 {
 	stack_a->top = stack_a->top->prev;
 	stack_b->top = stack_b->top->prev;
-	ft_putstr_fd("rrr\n", 1);
+	if (print)
+		ft_putstr_fd("rrr\n", 1);
 }
 
 int	rotate(t_stack *stack, int times, char *move)

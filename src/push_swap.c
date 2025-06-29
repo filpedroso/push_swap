@@ -15,9 +15,7 @@
 int	check_args(char *input)
 {
 	long	number;
-	int		args_amount;
 
-	args_amount = 0;
 	while (*input)
 	{
 		while (*input == ' ')
@@ -26,7 +24,6 @@ int	check_args(char *input)
 		if (number > INT_MAX || number < INT_MIN)
 			return (0);
 		input += ft_numlen(number);
-		args_amount++;
 	}
 	return (1);
 }

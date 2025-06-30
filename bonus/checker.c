@@ -27,7 +27,6 @@ void	checker(t_stack *stack_a, t_stack *stack_b)
 		free(instruction);
 		instruction = get_next_line(0);
 	}
-	rotate_a_to_top(stack_a);
 	if (is_sorted(stack_a))
 		ft_putstr_fd("OK\n", 1);
 	else

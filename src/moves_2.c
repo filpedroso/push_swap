@@ -14,6 +14,9 @@
 
 void	rr(t_stack *stack_a, t_stack *stack_b, t_print print)
 {
+	if (!stack_a || !stack_a->top || stack_a->size == 0 || !stack_b
+		|| !stack_b->top || stack_b->size == 0)
+		return ;
 	stack_a->top = stack_a->top->next;
 	stack_b->top = stack_b->top->next;
 	if (print)
@@ -22,6 +25,9 @@ void	rr(t_stack *stack_a, t_stack *stack_b, t_print print)
 
 void	rrr(t_stack *stack_a, t_stack *stack_b, t_print print)
 {
+	if (!stack_a || !stack_a->top || stack_a->size == 0 || !stack_b
+		|| !stack_b->top || stack_b->size == 0)
+		return ;
 	stack_a->top = stack_a->top->prev;
 	stack_b->top = stack_b->top->prev;
 	if (print)
@@ -32,6 +38,8 @@ int	rotate(t_stack *stack, int times, char *move)
 {
 	int	times_rotated;
 
+	if (!stack || !stack->top || stack->size == 0)
+		return (0);
 	times_rotated = 0;
 	while (times--)
 	{
@@ -46,6 +54,8 @@ int	reverse(t_stack *stack, int times, char *move)
 {
 	int	times_rotated;
 
+	if (!stack || !stack->top || stack->size == 0)
+		return (0);
 	times_rotated = 0;
 	while (times--)
 	{

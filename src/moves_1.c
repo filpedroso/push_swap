@@ -19,7 +19,7 @@ void	swap(t_stack *stack, char *move)
 {
 	t_node	*a;
 
-	if (!stack || stack->size < 2)
+	if (!stack || !stack->top || stack->size < 2)
 		return ;
 	a = pop(stack);
 	reinsert_after(stack->top, a);
@@ -31,7 +31,7 @@ void	push(t_stack *stack_1, t_stack *stack_2, char *move)
 {
 	t_node	*node;
 
-	if (stack_1->size == 0)
+	if (!stack_1 || !stack_1->top || stack_1->size == 0)
 		return ;
 	node = pop(stack_1);
 	if (!node)
@@ -66,7 +66,7 @@ static t_node	*pop(t_stack *stack)
 {
 	t_node	*node;
 
-	if (!stack || !stack->top)
+	if (!stack || !stack->top || stack->size == 0)
 		return (NULL);
 	node = stack->top;
 	if (stack->size == 1)

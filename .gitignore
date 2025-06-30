@@ -1,4 +1,3 @@
 .gitignore
 .vscode
-en.subject.pdf
-tools/
+.DS_Store
